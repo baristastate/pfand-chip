@@ -1,0 +1,23 @@
+{
+  "name": "pfand-chip",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local RFID deposit system for wooden beer barrels",
+  "license": "AGPL-3.0-only",
+  "author": "Barista State <baristastate@gmail.com>",
+  "packageManager": "pnpm@9.0.0",
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "clean": "turbo run clean"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0"
+  }
+}

@@ -1,0 +1,11 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'supabase-db'
+    static_configs:
+      - targets: ['supabase-db:5432'] # Requires postgres_exporter
+
+  - job_name: 'ai-service'
+    static_configs:
+      - targets: ['ai-service:8080']

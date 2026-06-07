@@ -1,0 +1,82 @@
+services:
+  # --- SUPABASE STACK ---
+  db:
+    container_name: supabase-db
+    image: postgres:15-alpine
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    volumes:
+      - ./docker/db/data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # (Simplified Supabase setup for local dev - usually requires 10+ services)
+  # In a real production setup, we'd use the official supabase/docker repo approach.
+  # Here we provide the entries for the main components.
+
+  # --- OLLAMA (Local AI) ---
+  ollama:
+    container_name: ollama
+    image: ollama/ollama:latest
+    volumes:
+      - ./docker/ollama:/root/.ollama
+    ports:
+      - "11434:11434"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  # --- WINDMILL (Business Logic) ---
+  windmill:
+    image: ghcr.io/windmill-labs/windmill:latest
+    container_name: windmill
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=${WINDMILL_DATABASE_URL}
+    depends_on:
+      - db
+
+  # --- NODE-RED (Hardware/IoT) ---
+  node-red:
+    image: nodered/node-red:latest
+    container_name: node-red
+    ports:
+      - "1880:1880"
+    volumes:
+      - ./node-red:/data
+    environment:
+      - TZ=Europe/Berlin
+    depends_on:
+      - db
+
+  # --- MONITORING ---
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus:/etc/prometheus
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./monitoring/grafana:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+
+networks:
+  default:
+    name: muenchner-kindl-net

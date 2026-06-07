@@ -1,0 +1,75 @@
+[
+    {
+        "id": "rfid_node_1",
+        "type": "tab",
+        "label": "RFID-Scan",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "mock_rfid_in",
+        "type": "inject",
+        "z": "rfid_node_1",
+        "name": "Simulierter Scan",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "rfid/scan",
+        "payload": "E004015020304050",
+        "payloadType": "str",
+        "x": 150,
+        "y": 120,
+        "wires": [
+            [
+                "lookup_barrel"
+            ]
+        ]
+    },
+    {
+        "id": "lookup_barrel",
+        "type": "http request",
+        "z": "rfid_node_1",
+        "name": "Supabase Abfrage",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://supabase-db:54321/rest/v1/rfid_tags?rfid_uid=eq.{{payload}}&select=barrel_id",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 400,
+        "y": 120,
+        "wires": [
+            [
+                "debug_log"
+            ]
+        ]
+    },
+    {
+        "id": "debug_log",
+        "type": "debug",
+        "z": "rfid_node_1",
+        "name": "Scan Ergebnis",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 120,
+        "wires": []
+    }
+]
