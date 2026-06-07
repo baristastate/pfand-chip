@@ -1,9 +1,8 @@
 services:
-  # --- SUPABASE STACK ---
+  # --- POSTGRES (Supabase-kompatibel) ---
   db:
     container_name: supabase-db
     image: postgres:15-alpine
-    command: postgres -c config_file=/etc/postgresql/postgresql.conf
     volumes:
       - ./docker/db/data:/var/lib/postgresql/data
     environment:
@@ -13,37 +12,20 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-
-  # (Simplified Supabase setup for local dev - usually requires 10+ services)
-  # In a real production setup, we'd use the official supabase/docker repo approach.
-  # Here we provide the entries for the main components.
-
-  # --- OLLAMA (Local AI) ---
-  ollama:
-    container_name: ollama
-    image: ollama/ollama:latest
-    volumes:
-      - ./docker/ollama:/root/.ollama
     ports:
-      - "11434:11434"
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+      - "54322:5432"
 
   # --- WINDMILL (Business Logic) ---
   windmill:
     image: ghcr.io/windmill-labs/windmill:latest
     container_name: windmill
     ports:
-      - "8000:8000"
+      - "8080:8000"
     environment:
       - DATABASE_URL=${WINDMILL_DATABASE_URL}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   # --- NODE-RED (Hardware/IoT) ---
   node-red:
@@ -56,7 +38,8 @@ services:
     environment:
       - TZ=Europe/Berlin
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   # --- MONITORING ---
   prometheus:
@@ -77,6 +60,9 @@ services:
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
 
+  # NOTE: Ollama läuft nativ auf dem Host (localhost:11434).
+  # Für Docker-Services erreichbar via host.docker.internal:11434
+
 networks:
   default:
-    name: muenchner-kindl-net
+    name: pfand-chip-net
