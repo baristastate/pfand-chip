@@ -140,8 +140,8 @@ const ScannerApp = () => {
       <style>{`
         .mobile-container {
           height: 100vh;
-          background: #000;
-          color: #fff;
+          background: var(--background);
+          color: var(--text);
           display: flex;
           flex-direction: column;
           overflow: hidden;
@@ -224,9 +224,9 @@ const ScannerApp = () => {
           gap: 12px;
         }
         .scan-btn.secondary {
-          background: #1a1a1a;
-          color: #fff;
-          border: 1px solid rgba(255,255,255,0.1);
+          background: var(--surface);
+          color: var(--text);
+          border: 1px solid var(--border);
         }
         
         .scan-result-card {

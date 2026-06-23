@@ -9,6 +9,9 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
+export type EventType = 'FUEHRUNG' | 'PRIVATE_EVENT' | 'TASTING';
+export type ContractStatus = 'DRAFT' | 'ACCEPTED' | 'CANCELLED';
+
 export type BarrelSize = '10' | '30' | '200';
 export type BarrelStatus =
   | 'CREATED'
@@ -120,6 +123,49 @@ export interface Database {
         Insert: Omit<Database['public']['Tables']['rfid_tags']['Row'], 'id' | 'created_at'>;
         Update: Partial<Pick<Database['public']['Tables']['rfid_tags']['Row'], 'barrel_id' | 'active'>>;
       };
+      tour_packages: {
+        Row: {
+          id: string;
+          name: string;
+          description: string | null;
+          event_type: EventType;
+          duration_minutes: number | null;
+          min_participants: number;
+          max_participants: number;
+          price_per_person: number | null;
+          price_flat: number | null;
+          includes_catering: boolean;
+          active: boolean;
+          created_at: string;
+        };
+        Insert: Omit<Database['public']['Tables']['tour_packages']['Row'], 'id' | 'created_at'>;
+        Update: Partial<Database['public']['Tables']['tour_packages']['Insert']>;
+      };
+      event_contracts: {
+        Row: {
+          id: string;
+          event_id: string | null;
+          package_id: string | null;
+          contact_name: string;
+          contact_email: string;
+          contact_phone: string | null;
+          company_name: string | null;
+          participant_count: number;
+          requested_date: string;
+          requested_time: string;
+          special_requirements: string | null;
+          total_price: number | null;
+          contract_text: string;
+          status: ContractStatus;
+          accepted_at: string | null;
+          accepted_by_name: string | null;
+          accepted_ip: string | null;
+          chat_transcript: Json | null;
+          created_at: string;
+        };
+        Insert: Omit<Database['public']['Tables']['event_contracts']['Row'], 'id' | 'created_at'>;
+        Update: Partial<Pick<Database['public']['Tables']['event_contracts']['Row'], 'status' | 'accepted_at' | 'accepted_by_name'>>;
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
@@ -138,3 +184,5 @@ export type BarrelMovement = Database['public']['Tables']['barrel_movements']['R
 export type DepositAccount = Database['public']['Tables']['deposit_accounts']['Row'];
 export type DepositTransaction = Database['public']['Tables']['deposit_transactions']['Row'];
 export type RfidTag = Database['public']['Tables']['rfid_tags']['Row'];
+export type TourPackage = Database['public']['Tables']['tour_packages']['Row'];
+export type EventContract = Database['public']['Tables']['event_contracts']['Row'];

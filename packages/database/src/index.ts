@@ -10,4 +10,8 @@ export type {
   DepositAccount,
   DepositTransaction,
   RfidTag,
+  TourPackage,
+  EventContract,
+  EventType,
+  ContractStatus,
 } from './types';
