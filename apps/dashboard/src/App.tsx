@@ -1,22 +1,27 @@
-import React from 'react';
-import { 
-  LayoutDashboard, 
-  Package, 
-  Truck, 
-  Users, 
-  History, 
+import React, { useState } from 'react';
+import {
+  LayoutDashboard,
+  Package,
+  Truck,
+  Users,
+  History,
   Settings,
   Bell,
   Search,
   Beer,
   ScanLine,
-  Loader2
+  Loader2,
+  CalendarRange,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useBarrels } from './hooks/useBarrels';
 import { useDashboardStats } from './hooks/useDashboardStats';
+import { BookingsView } from './views/BookingsView';
+
+type Page = 'overview' | 'buchungen';
 
 const Dashboard = () => {
+  const [page, setPage] = useState<Page>('overview');
   const { barrels, loading: barrelsLoading } = useBarrels();
   const { stats, loading: statsLoading } = useDashboardStats();
 
@@ -28,14 +33,15 @@ const Dashboard = () => {
           <Beer className="logo-icon" size={32} />
           <h1 className="logo-text gradient-text">Kindl System</h1>
         </div>
-        
+
         <nav className="nav-menu">
-          <NavItem icon={<LayoutDashboard size={20} />} label="Overview" active />
-          <NavItem icon={<Package size={20} />} label="Barrels" />
-          <NavItem icon={<Truck size={20} />} label="Deliveries" />
-          <NavItem icon={<Users size={20} />} label="Customers" />
-          <NavItem icon={<History size={20} />} label="Logs" />
-          <NavItem icon={<Settings size={20} />} label="Settings" />
+          <NavItem icon={<LayoutDashboard size={20} />} label="Übersicht" active={page === 'overview'} onClick={() => setPage('overview')} />
+          <NavItem icon={<Package size={20} />} label="Fässer" onClick={() => setPage('overview')} />
+          <NavItem icon={<Truck size={20} />} label="Lieferungen" onClick={() => setPage('overview')} />
+          <NavItem icon={<Users size={20} />} label="Kunden" onClick={() => setPage('overview')} />
+          <NavItem icon={<CalendarRange size={20} />} label="Buchungen" active={page === 'buchungen'} onClick={() => setPage('buchungen')} />
+          <NavItem icon={<History size={20} />} label="Protokoll" onClick={() => setPage('overview')} />
+          <NavItem icon={<Settings size={20} />} label="Einstellungen" onClick={() => setPage('overview')} />
         </nav>
 
         <div className="sidebar-footer">
@@ -63,20 +69,24 @@ const Dashboard = () => {
         </header>
 
         <section className="content-grid">
-          {statsLoading ? (
-            <div className="loading-state"><Loader2 className="animate-spin" /> Calculating metrics...</div>
+          {page === 'buchungen' ? (
+            <BookingsView />
           ) : (
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="stats-row"
-            >
-              <StatCard label="Active Barrels" value={stats.activeBarrels.toString()} trend="+3%" />
-              <StatCard label="At Customers" value={stats.atCustomer.toString()} trend="+12%" />
-              <StatCard label="Maintenance" value={stats.maintenance.toString()} trend="-2%" />
-              <StatCard label="Open Deposits" value={`${stats.totalDeposit.toLocaleString('de-DE')} €`} trend="+540€" />
-            </motion.div>
-          )}
+            <>
+              {statsLoading ? (
+                <div className="loading-state"><Loader2 className="animate-spin" /> Berechne Kennzahlen…</div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="stats-row"
+                >
+                  <StatCard label="Aktive Fässer" value={stats.activeBarrels.toString()} trend="+3%" />
+                  <StatCard label="Beim Kunden" value={stats.atCustomer.toString()} trend="+12%" />
+                  <StatCard label="Wartung" value={stats.maintenance.toString()} trend="-2%" />
+                  <StatCard label="Offene Pfänder" value={`${stats.totalDeposit.toLocaleString('de-DE')} €`} trend="+540€" />
+                </motion.div>
+              )}
 
           {/* Recent Activity / Barrel Status */}
           <div className="data-layout">
@@ -135,6 +145,8 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+            </>
+          )}
         </section>
       </main>
 
@@ -296,8 +308,8 @@ const Dashboard = () => {
   );
 };
 
-const NavItem = ({ icon, label, active = false }) => (
-  <button className={`nav-item ${active ? 'active' : ''}`}>
+const NavItem = ({ icon, label, active = false, onClick }: { icon: React.ReactNode; label: string; active?: boolean; onClick?: () => void }) => (
+  <button className={`nav-item ${active ? 'active' : ''}`} onClick={onClick}>
     {icon}
     <span>{label}</span>
   </button>
