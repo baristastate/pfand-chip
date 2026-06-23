@@ -12,6 +12,64 @@ importers:
         specifier: ^2.0.0
         version: 2.9.16
 
+  apps/booking:
+    dependencies:
+      '@pfand-chip/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@supabase/supabase-js':
+        specifier: ^2.107.0
+        version: 2.107.0
+      framer-motion:
+        specifier: ^12.40.0
+        version: 12.40.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      lucide-react:
+        specifier: ^1.17.0
+        version: 1.17.0(react@19.2.7)
+      react:
+        specifier: ^19.2.6
+        version: 19.2.7
+      react-dom:
+        specifier: ^19.2.6
+        version: 19.2.7(react@19.2.7)
+    devDependencies:
+      '@eslint/js':
+        specifier: ^10.0.1
+        version: 10.0.1(eslint@10.4.1)
+      '@types/node':
+        specifier: ^24.12.3
+        version: 24.13.1
+      '@types/react':
+        specifier: ^19.2.14
+        version: 19.2.17
+      '@types/react-dom':
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.17)
+      '@vitejs/plugin-react':
+        specifier: ^6.0.1
+        version: 6.0.2(vite@8.0.16(@types/node@24.13.1))
+      eslint:
+        specifier: ^10.3.0
+        version: 10.4.1
+      eslint-plugin-react-hooks:
+        specifier: ^7.1.1
+        version: 7.1.1(eslint@10.4.1)
+      eslint-plugin-react-refresh:
+        specifier: ^0.5.2
+        version: 0.5.2(eslint@10.4.1)
+      globals:
+        specifier: ^17.6.0
+        version: 17.6.0
+      typescript:
+        specifier: ~6.0.2
+        version: 6.0.3
+      typescript-eslint:
+        specifier: ^8.59.2
+        version: 8.60.1(eslint@10.4.1)(typescript@6.0.3)
+      vite:
+        specifier: ^8.0.12
+        version: 8.0.16(@types/node@24.13.1)
+
   apps/dashboard:
     dependencies:
       '@pfand-chip/database':
