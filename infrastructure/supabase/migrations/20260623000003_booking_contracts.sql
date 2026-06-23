@@ -56,10 +56,21 @@ create policy "public read contracts"
   on event_contracts for select
   using (true);
 
--- Seed: Standard-Pakete
+-- Seed: Buchbare Pakete (abgestimmt auf Brauerei-Angebot)
 insert into tour_packages (name, description, event_type, duration_minutes, min_participants, max_participants, price_per_person, price_flat, includes_catering)
 values
-  ('Brauerei-Führung Standard', 'Klassische Führung durch die Brauerei inkl. 2 Verkostungen', 'FUEHRUNG', 90, 5, 25, 18.00, null, false),
-  ('Brauerei-Führung Premium', 'Exklusive Führung mit Bierverkostung (5 Sorten) + Brotzeit', 'FUEHRUNG', 120, 8, 20, 35.00, null, true),
-  ('Private Veranstaltung', 'Exklusiver Brauereiraum für private Veranstaltung', 'PRIVATE_EVENT', 240, 10, 80, null, 1200.00, false),
-  ('Bier-Tasting', 'Geführtes Tasting mit 6 Biersorten + Experten-Kommentar', 'TASTING', 60, 4, 16, 22.00, null, false);
+  (
+    'Brauerei-Führung Standard',
+    'Klassische Führung durch alle Produktionsstufen: Maischen, Gären, Lagern — inkl. 2 frischer Verkostungen direkt aus dem Lagertank.',
+    'FUEHRUNG', 90, 5, 25, 18.00, null, false
+  ),
+  (
+    'Private Bierverkostung',
+    'Exklusive Verkostungsrunde mit unserem Braumeister: 6 ausgewählte Biersorten mit Entstehungsgeschichte, Aromaprofil und Speisenbegleitung.',
+    'TASTING', 120, 5, 15, 32.00, null, true
+  ),
+  (
+    'Firmen-Event & Teambuilding',
+    'Ihr exklusiver Abend in der Brauerei: privater Brauereiabschnitt, individuelles Programm (Führung + Bierbrau-Workshop optional), Brotzeit aus der Region.',
+    'PRIVATE_EVENT', 300, 15, 80, null, 1400.00, true
+  );
