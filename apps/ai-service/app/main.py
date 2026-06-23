@@ -45,6 +45,25 @@ def health():
     return {"status": "ok"}
 
 
+@app.get("/booking/packages")
+async def get_packages():
+    """Proxy zu Supabase: gibt aktive tour_packages zurück."""
+    supabase_url = os.getenv("SUPABASE_URL", "http://localhost:54321")
+    supabase_key = os.getenv("SUPABASE_ANON_KEY", "")
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{supabase_url}/rest/v1/tour_packages",
+            params={"active": "eq.true", "order": "event_type"},
+            headers={
+                "apikey": supabase_key,
+                "Authorization": f"Bearer {supabase_key}",
+            },
+        )
+        if response.status_code != 200:
+            raise HTTPException(status_code=502, detail="Supabase nicht erreichbar")
+        return response.json()
+
+
 # ─── Buchungs-Endpunkte ─────────────────────────────────────────────
 
 class ChatMessage(BaseModel):

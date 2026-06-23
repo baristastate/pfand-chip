@@ -76,6 +76,21 @@ services:
   # NOTE: Ollama läuft nativ auf dem Host (localhost:11434).
   # Für Docker-Services erreichbar via host.docker.internal:11434
 
+  # --- BUCHUNGS-WEBAPP (öffentlich, Port 5174) ---
+  booking:
+    build:
+      context: ..
+      dockerfile: apps/booking/Dockerfile
+      args:
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:-http://localhost:54321}
+        VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY}
+        VITE_AI_SERVICE_URL: ""
+    container_name: booking
+    ports:
+      - "5174:80"
+    depends_on:
+      - ai-service
+
 networks:
   default:
     name: pfand-chip-net
